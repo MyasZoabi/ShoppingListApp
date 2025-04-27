@@ -6,7 +6,7 @@ enum class Category {
     CLEANING,
     ELECTRONICS,
     CLOTHING,
-    OTHER, Food
+    OTHER, 
 };
 
 #endif
