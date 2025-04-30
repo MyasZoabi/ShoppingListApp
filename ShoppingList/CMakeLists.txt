@@ -15,13 +15,19 @@ add_executable(ShoppingListApp
         ShoppingList.h
         User.h
 )
+# --- Unit Tests ---
+enable_testing()
 
-# Include the tests folder for the second executable
-include_directories(tests)
+file(GLOB TEST_SOURCES "tests/*.cpp")
 
-# Test Executable
 add_executable(ShoppingListTests
-        tests/test_item.cpp
+        ${TEST_SOURCES}
+        ShoppingList.cpp
         Item.cpp
+        User.cpp
 )
+
+target_include_directories(ShoppingListTests PRIVATE ${PROJECT_SOURCE_DIR})
+add_test(NAME AllTests COMMAND ShoppingListTests)
+
 
