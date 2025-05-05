@@ -14,17 +14,21 @@ private:
     std::vector<Observer*> observers;
 
 public:
-    ShoppingList(const std::string& name);
+    explicit ShoppingList(const std::string& name);
 
     void addItem(const Item& item);
     void removeItem(const Item& item);
+
     void addObserver(Observer* observer);
     void notifyObservers();
-
     std::string getName() const;
+
     int getRemainingItemsCount() const;
+    int getTotalItemsCount() const;
+
     std::vector<Item> getAllItems() const;
+    std::vector<Item> findItemsByCategory(Category category) const;
+    std::vector<Item> findItemsByName(const std::string& searchTerm) const;
 };
 
 #endif
-

@@ -3,7 +3,7 @@ project(ShoppingListApp)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Real App
+# --- Main Application ---
 add_executable(ShoppingListApp
         main.cpp
         User.cpp
@@ -16,12 +16,16 @@ add_executable(ShoppingListApp
         User.h
 )
 
-# Include the tests folder for the second executable
-include_directories(tests)
+# --- Unit Tests ---
+enable_testing()
 
-# Test Executable
+file(GLOB TEST_SOURCES "tests/*.cpp")
+
 add_executable(ShoppingListTests
-        tests/test_item.cpp
+        ${TEST_SOURCES}
+        ShoppingList.cpp
         Item.cpp
+        User.cpp
 )
-
+target_include_directories(ShoppingListTests PRIVATE ${PROJECT_SOURCE_DIR})
+add_test(NAME AllTests COMMAND ShoppingListTests)

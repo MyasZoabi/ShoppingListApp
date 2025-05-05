@@ -1,5 +1,6 @@
 #include "ShoppingList.h"
 #include <algorithm>
+#include <cctype>  // for std::tolower
 
 ShoppingList::ShoppingList(const std::string& name) : name(name) {}
 
@@ -40,10 +41,46 @@ int ShoppingList::getRemainingItemsCount() const {
     return count;
 }
 
+int ShoppingList::getTotalItemsCount() const {
+    int total = 0;
+    for (const auto& [_, items] : itemsByCategory) {
+        total += items.size();
+    }
+    return total;
+}
+
 std::vector<Item> ShoppingList::getAllItems() const {
     std::vector<Item> all;
     for (const auto& [_, items] : itemsByCategory) {
         all.insert(all.end(), items.begin(), items.end());
     }
     return all;
+}
+
+std::vector<Item> ShoppingList::findItemsByCategory(Category category) const {
+    auto it = itemsByCategory.find(category);
+    if (it != itemsByCategory.end()) {
+        return it->second;
+    }
+    return {};
+}
+
+std::vector<Item> ShoppingList::findItemsByName(const std::string& searchTerm) const {
+    std::vector<Item> result;
+
+    auto toLower = [](std::string s) {
+        std::transform(s.begin(), s.end(), s.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        return s;
+    };
+
+    std::string termLower = toLower(searchTerm);
+
+    for (const auto& [_, items] : itemsByCategory) {
+        for (const auto& item : items) {
+            if (toLower(item.getName()).find(termLower) != std::string::npos)
+                result.push_back(item);
+        }
+    }
+    return result;
 }
