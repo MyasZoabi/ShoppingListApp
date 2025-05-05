@@ -10,9 +10,12 @@ TEST_CASE("Add and remove items", "[ShoppingList]") {
     list.addItem(rice);
     list.addItem(soap);
 
-    SECTION("Items are added") {
+    SECTION("Total and remaining items are correctly tracked after addition") {
         REQUIRE(list.getTotalItemsCount() == 2);
+        REQUIRE(list.getRemainingItemsCount() == 2);
+    }
 
+    SECTION("Items are categorized correctly") {
         auto foodItems = list.findItemsByCategory(Category::FOOD);
         REQUIRE(foodItems.size() == 1);
         REQUIRE(foodItems[0].getName() == "Rice");
@@ -25,6 +28,7 @@ TEST_CASE("Add and remove items", "[ShoppingList]") {
     SECTION("Items are removed correctly") {
         list.removeItem(soap);
         REQUIRE(list.getTotalItemsCount() == 1);
+        REQUIRE(list.getRemainingItemsCount() == 1);
 
         auto cleaningItems = list.findItemsByCategory(Category::CLEANING);
         REQUIRE(cleaningItems.empty());
@@ -35,7 +39,7 @@ TEST_CASE("Add and remove items", "[ShoppingList]") {
     }
 }
 
-TEST_CASE("Remaining items count", "[ShoppingList]") {
+TEST_CASE("Remaining items count after marking as purchased", "[ShoppingList]") {
     ShoppingList list("RemainingTest");
 
     Item rice("Rice", Category::FOOD, 1);
@@ -48,6 +52,27 @@ TEST_CASE("Remaining items count", "[ShoppingList]") {
 
     REQUIRE(list.getTotalItemsCount() == 2);
     REQUIRE(list.getRemainingItemsCount() == 1);
+}
+
+TEST_CASE("Marking all items as purchased sets remaining count to zero", "[ShoppingList]") {
+    ShoppingList list("AllPurchased");
+
+    Item item1("Milk", Category::FOOD, 1);
+    Item item2("Detergent", Category::CLEANING, 1);
+
+    list.addItem(item1);
+    list.addItem(item2);
+
+    item1.markAsPurchased();
+    item2.markAsPurchased();
+
+    list.removeItem(item1); 
+    list.removeItem(item2);
+    list.addItem(item1);
+    list.addItem(item2);
+
+    REQUIRE(list.getTotalItemsCount() == 2);
+    REQUIRE(list.getRemainingItemsCount() == 0);
 }
 
 TEST_CASE("Find items by category", "[ShoppingList]") {
